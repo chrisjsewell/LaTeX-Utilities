@@ -192,7 +192,7 @@
         "eslint": "^6.5.1",
         "glob": "^7.1.4",
         "mocha": "^6.1.4",
-        "typescript": "^3.6.3",
+        "typescript": "^3.6.4",
         "vscode": "^1.1.36"
     },
     "dependencies": {
