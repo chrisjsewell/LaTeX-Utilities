@@ -281,14 +281,14 @@ export class TikzPictureView {
         if (newCommandFile !== '') {
             if (path.isAbsolute(newCommandFile)) {
                 if (fs.existsSync(newCommandFile)) {
-                    commandsString = await fs.readFileSync(newCommandFile, { encoding: 'utf8' })
+                    this.extension.logger.addLogMessage(`Using preamble file for tikz preview: ${newCommandFile}`)
                     commandsString = await readFile(newCommandFile, { encoding: 'utf8' })
                 }
             } else {
                 const rootDir = this.extension.workshop.manager.rootDir()
                 const newCommandFileAbs = path.join(rootDir, newCommandFile)
                 if (fs.existsSync(newCommandFileAbs)) {
-                    commandsString = await fs.readFileSync(newCommandFileAbs, { encoding: 'utf8' })
+                    this.extension.logger.addLogMessage(`Using preamble file for tikz preview: ${newCommandFileAbs}`)
                     commandsString = await readFile(newCommandFileAbs, { encoding: 'utf8' })
                 }
             }
