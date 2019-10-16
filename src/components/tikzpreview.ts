@@ -10,6 +10,7 @@ import { Extension } from '../main'
 import { stripComments } from '../utils'
 
 const removeDir = promisify(fse.remove)
+const readFile = promisify(fs.readFile)
 
 interface IFileTikzCollection {
     location: string
@@ -281,12 +282,14 @@ export class TikzPictureView {
             if (path.isAbsolute(newCommandFile)) {
                 if (fs.existsSync(newCommandFile)) {
                     commandsString = await fs.readFileSync(newCommandFile, { encoding: 'utf8' })
+                    commandsString = await readFile(newCommandFile, { encoding: 'utf8' })
                 }
             } else {
                 const rootDir = this.extension.workshop.manager.rootDir()
                 const newCommandFileAbs = path.join(rootDir, newCommandFile)
                 if (fs.existsSync(newCommandFileAbs)) {
                     commandsString = await fs.readFileSync(newCommandFileAbs, { encoding: 'utf8' })
+                    commandsString = await readFile(newCommandFileAbs, { encoding: 'utf8' })
                 }
             }
         }
@@ -297,7 +300,7 @@ export class TikzPictureView {
         const regex = /(\\usepackage(?:\[[^\]]*\])?{(?:tikz|pgfplots|xcolor)}|\\(?:tikzset|pgfplotsset){(?:[^{}]+|{(?:[^{}]+|{(?:[^{}]+|{[^{}]+})+})+})+}|\\(?:usetikzlibrary|usepgfplotslibrary){[^}]+}|\\definecolor{[^}]+}{[^}]+}{[^}]+}|\\colorlet{[^}]+}{[^}]+})/gm
         const commands: string[] = []
 
-        const content = await fs.readFileSync(fileTikzCollection.location, { encoding: 'utf8' })
+        const content = await readFile(fileTikzCollection.location, { encoding: 'utf8' })
         const noCommentContent = content.replace(/([^\\]|^)%.*$/gm, '$1').split('\\begin{document}')[0] // Strip comments
 
         let result: RegExpExecArray | null
@@ -348,6 +351,6 @@ export class TikzPictureView {
     }
 
     public async cleanupTempDir() {
-        await fse.removeSync(path.join(tmpdir(), this.TEMPFOLDER_NAME))
+        await fse.remove(path.join(tmpdir(), this.TEMPFOLDER_NAME))
     }
 }
